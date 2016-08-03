@@ -1,0 +1,82 @@
+[
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_gray3.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_gray3.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_color_button.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_color_button.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_input.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_input.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_gray3_item.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_gray3_item.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_search_button.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_search_button.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_hint_input.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_hint_input.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/login_findpass_button_selector.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/login_findpass_button_selector.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_button.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_button.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_gray_group_item.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_gray_group_item.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_blue.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_blue.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_black_group_item.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_black_group_item.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_bar_text.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_bar_text.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_menu.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_menu.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_gray2.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_gray2.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_black.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_black.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_blue_item.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_blue_item.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_aio_send_button.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_aio_send_button.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_dark_gray_item.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_dark_gray_item.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_dark_gray.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_dark_gray.xml"
+    },
+    {
+        "merged": "/Users/deva/AndroidStudioProjects/TestXMPP/app/build/intermediates/res/merged/debug/color/skin_gray2_item.xml",
+        "source": "/Users/deva/AndroidStudioProjects/TestXMPP/app/src/main/res/color/skin_gray2_item.xml"
+    }
+]
