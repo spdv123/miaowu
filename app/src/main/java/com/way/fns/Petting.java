@@ -22,7 +22,7 @@ import java.util.Set;
 public class Petting {
     private Handler petHandler;
     private String key;
-    Runnable refresher;
+    Runnable refresher, feeder;
 
     // 返回方法构成的get参数
     public String f(Map<String, String> map) {
@@ -37,6 +37,19 @@ public class Petting {
     public Petting(Handler handler, String k) {
         petHandler = handler;
         key = k;
+        initRunnables();
+        Refresh();
+    }
+
+    public void Refresh() {
+        new Thread(refresher).start();
+    }
+
+    public void Feed() {
+        new Thread(feeder).start();
+    }
+
+    private void initRunnables() {
         refresher  = new Runnable() {
             @Override
             public void run() {
@@ -47,7 +60,6 @@ public class Petting {
                     Message refreshed = new Message();
                     refreshed.setTarget(petHandler);
                     refreshed.what = msgExtraType.PET_REFRESH;
-                    Bundle bundle = new Bundle();
 
                     Bundle bundle1 = JSONUtil.fromJson(jsonObject);
 
@@ -58,6 +70,25 @@ public class Petting {
                 }
             }
         };
-        new Thread(refresher).start();
+
+        feeder = new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Map<String, String> func = new LinkedHashMap<String, String>();
+                    func.put("f", petstr.Feed);
+                    JSONObject jsonObject = JSONUtil.getJSONFrom(petstr.PetURL + f(func));
+                    Message feeded = new Message();
+                    feeded.setTarget(petHandler);
+                    feeded.what = msgExtraType.PET_FEED;
+                    Bundle bundle1 = JSONUtil.fromJson(jsonObject);
+
+                    feeded.setData(bundle1);
+                    feeded.sendToTarget();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
     }
 }

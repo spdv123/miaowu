@@ -55,6 +55,10 @@ public class PetActivity extends SwipeBackActivity {
                     Bundle bundle = msg.getData();
                     petRefresh(bundle);
                     break;
+                case msgExtraType.PET_FEED:
+                    Bundle bundle1 = msg.getData();
+                    petFeed(bundle1);
+                    break;
                 default:
                     break;
             }
@@ -82,18 +86,7 @@ public class PetActivity extends SwipeBackActivity {
         pet_feed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                petToast.showShort(petstr.FeedSuccess);
-                //petToast.addAttr(petstr.Power, 10);
-                petToast.addAttr(petstr.Intel, 10);
-                //pet_intel.setText("智力:20");
-                petHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pet_intel.setText("20");
-                    }
-                }, 2300);
-                //petToast.addAttr(petstr.Spirit, 10);
-                //petToast.addAttr(petstr.Speed, 10);
+                petting.Feed();
             }
         });
         // test resource
@@ -130,6 +123,25 @@ public class PetActivity extends SwipeBackActivity {
 
         pet_head.setColorFilter(Color.rgb(0, 0xb3, 0xe0), PorterDuff.Mode.DST_ATOP);
         //Log.d("color set", "c" + Color.BLUE);
+    }
+
+    // 宠物喂养事件
+    private void petFeed(Bundle bundle) {
+        String result = bundle.getString(petstr.Result);
+        if(result == null || result.equals(petstr.Fail)) {
+            petToast.showShort(bundle.getString(petstr.Reason));
+            return;
+        }
+        String attr = bundle.getString("attr");
+        int value = bundle.getInt("value");
+        petToast.showShort(petstr.FeedSuccess);
+        petToast.addAttr(attr, value);
+        petHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                petting.Refresh();
+            }
+        }, 2100);
     }
 
     private void setHeadRes(int pet_head_icon) {
