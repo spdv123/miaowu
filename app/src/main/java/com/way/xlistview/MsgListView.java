@@ -9,7 +9,10 @@
 package com.way.xlistview;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -21,6 +24,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Scroller;
 
+import com.way.consts.msgExtraType;
 import com.way.xx.R;
 
 public class MsgListView extends ListView implements OnScrollListener {
@@ -62,6 +66,8 @@ public class MsgListView extends ListView implements OnScrollListener {
 														// load more.
 	private final static float OFFSET_RADIO = 1.8f; // support iOS like pull
 													// feature.
+	// 显示更多的handler
+	private Handler showMoreHandler;
 
 	/**
 	 * @param context
@@ -166,7 +172,12 @@ public class MsgListView extends ListView implements OnScrollListener {
 			mPullRefreshing = false;
 			resetHeaderHeight();
 		}
-	}
+        Log.d("startLoadMore", "in it");
+        Message msg = new Message();
+        msg.setTarget(showMoreHandler);
+        msg.what = msgExtraType.SHOW_MORE;
+        msg.sendToTarget();
+    }
 
 	/**
 	 * stop load more, reset footer view.
@@ -181,7 +192,7 @@ public class MsgListView extends ListView implements OnScrollListener {
 	/**
 	 * set last refresh time
 	 * 
-	 * @param time
+	 * @param
 	 */
 	// public void setRefreshTime(String time) {
 	// mHeaderTimeView.setText(time);
@@ -374,4 +385,8 @@ public class MsgListView extends ListView implements OnScrollListener {
 
 		public void onLoadMore();
 	}
+
+    public void setShowMoreHandler(Handler h) {
+        showMoreHandler = h;
+    }
 }

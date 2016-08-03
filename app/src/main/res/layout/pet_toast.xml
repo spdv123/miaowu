@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="80dp"
-    android:layout_height="80dp"
-    android:background="@drawable/pet_ballon_1">
+    android:orientation="horizontal" android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#FEDFE1"
+        android:textColor="#F8C3CD"
         android:id="@+id/toast_text"
         android:layout_marginLeft="20dp"/>
     <ImageView

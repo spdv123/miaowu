@@ -110,6 +110,7 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
 	private String mWithJabberID = null;// 当前聊天用户的ID
     public Context chatContext;
     public Activity chatActivity;
+    public int messagesToShow;
 
 	private static final String[] PROJECTION_FROM = new String[] {
 			ChatProvider.ChatConstants._ID, ChatProvider.ChatConstants.DATE,
@@ -170,11 +171,12 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
 		setContentView(R.layout.chat);
         chatContext = this;
         chatActivity = this;
+        messagesToShow = 10;
 		initData();// 初始化数据
 		initView();// 初始化view
 		initFacePage();// 初始化表情
         initFnsPage();// 初始化功能
-		setChatWindowAdapter();// 初始化对话数据
+		setChatWindowAdapter(true);// 初始化对话数据
 		getContentResolver().registerContentObserver(
 				RosterProvider.CONTENT_URI, true, mContactObserver);// 开始监听联系人数据库
 	}
@@ -267,13 +269,27 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
 		mFaceMapKeys.addAll(keySet);
 	}
 
+    Handler showMoreHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case msgExtraType.SHOW_MORE:
+                    messagesToShow += 10;
+                    setChatWindowAdapter(false);
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
 	/**
 	 * 设置聊天的Adapter
 	 */
-	private void setChatWindowAdapter() {
+	private void setChatWindowAdapter(final boolean down) {
         String getrows = "((select count(*) from " + ChatProvider.TABLE_NAME + ") - 10)";
 		String selection = ChatConstants.JID + "='" + mWithJabberID + "'";
-        String orderby = ChatConstants.DATE + " asc"  + " limit 10 offset -10";
+        String orderby = ChatConstants.DATE + " desc"  + " limit " + messagesToShow;
 
 		// 异步查询数据库
 		new AsyncQueryHandler(getContentResolver()) {
@@ -283,7 +299,8 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
 					Cursor cursor) {
 				// ListAdapter adapter = new ChatWindowAdapter(cursor,
 				// PROJECTION_FROM, PROJECTION_TO, mWithJabberID);
-				ListAdapter adapter = new ChatAdapter(ChatActivity.this,
+                L.d("Query Complete", "times");
+				final ListAdapter adapter = new ChatAdapter(ChatActivity.this,
 						cursor, PROJECTION_FROM);
                 // 给adapter注册一个观察者,观察者具有onchanged事件
                 // http://blog.csdn.net/chunqiuwei/article/details/39934169
@@ -291,17 +308,21 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
                     @Override
                     public void onChanged() {
                         super.onChanged();
-                        mMsgListView.setSelection(mMsgListView.getBottom());
+						mMsgListView.setSelection(adapter.getCount() - 1);
                     }
                 });
 				mMsgListView.setAdapter(adapter);
-				mMsgListView.setSelection(adapter.getCount() - 1);
-                //mMsgListView.setSelection(mMsgListView.getBottom());
-                //Log.d("mMsgListView", "CHUFA");
+                if(down) {
+                    mMsgListView.setSelection(adapter.getCount() - 1);
+                } else {
+                    int pos = adapter.getCount()  - messagesToShow + 10;
+                    pos = Math.max(pos, 0);
+                    mMsgListView.setSelection(pos);
+                }
 			}
 
 		}.startQuery(0, null, ChatProvider.CONTENT_URI, PROJECTION_FROM,
-				selection, null, null);
+				selection, null, orderby);
 		// 同步查询数据库，建议停止使用,如果数据庞大时，导致界面失去响应
 		// Cursor cursor = managedQuery(ChatProvider.CONTENT_URI,
 		// PROJECTION_FROM,
@@ -321,6 +342,7 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
 		mMsgListView.setOnTouchListener(this);
 		mMsgListView.setPullLoadEnable(false);
 		mMsgListView.setXListViewListener(this);
+        mMsgListView.setShowMoreHandler(showMoreHandler);
 		mSendMsgBtn = (Button) findViewById(R.id.send);
 		mFaceSwitchBtn = (ImageButton) findViewById(R.id.face_switch_btn);
         mFnsSwitchBtn = (ImageButton) findViewById(R.id.fns_switch_btn);
@@ -444,7 +466,8 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
 
     public void sendMessageByHandler(String msg) {
         if(msg.length() >= 1) {
-            mMsgListView.setSelection(mMsgListView.getBottom());
+            //mMsgListView.setSelection(mMsgListView.getBottom());
+            mMsgListView.setSelection(mMsgListView.getAdapter().getCount() - 1);
             if (mXxService != null) {
                 mXxService.sendMessage(mWithJabberID, msg);
                 if (!mXxService.isAuthenticated())
@@ -476,7 +499,8 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
 	private void sendMessageIfNotNull() {
 		if (mChatEditText.getText().length() >= 1) {
             // 加上这句话让窗口发送消息随之滚动
-            mMsgListView.setSelection(mMsgListView.getBottom());
+            //mMsgListView.setSelection(mMsgListView.getBottom());
+            mMsgListView.setSelection(mMsgListView.getAdapter().getCount() - 1);
 			if (mXxService != null) {
 				mXxService.sendMessage(mWithJabberID, mChatEditText.getText()
 						.toString());

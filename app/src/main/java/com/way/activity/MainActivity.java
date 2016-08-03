@@ -276,7 +276,7 @@ public class MainActivity extends BaseSlidingFragmentActivity implements
 									.findViewById(R.id.icon));
 
 						}
-						return false;
+						return true;
 					}
 				});
 		mIphoneTreeView.setOnChildClickListener(new OnChildClickListener() {

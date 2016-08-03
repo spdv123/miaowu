@@ -47,7 +47,9 @@ public class ChatAdapter extends SimpleCursorAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Cursor cursor = this.getCursor();
-		cursor.moveToPosition(position);
+		L.d("cursor pos", "" + position);
+        // 反序显示
+		cursor.moveToPosition(cursor.getCount()-1-position);
 
 		long dateMilliseconds = cursor.getLong(cursor
 				.getColumnIndex(ChatProvider.ChatConstants.DATE));
