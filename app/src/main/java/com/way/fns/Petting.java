@@ -21,8 +21,8 @@ import java.util.Set;
 
 public class Petting {
     private Handler petHandler;
-    private String key;
-    Runnable refresher, feeder;
+    private String key, newname;
+    Runnable refresher, feeder, namechanger;
 
     // 返回方法构成的get参数
     public String f(Map<String, String> map) {
@@ -47,6 +47,11 @@ public class Petting {
 
     public void Feed() {
         new Thread(feeder).start();
+    }
+
+    public void ChangeName(String name) {
+        newname = name;
+        new Thread(namechanger).start();
     }
 
     private void initRunnables() {
@@ -85,6 +90,27 @@ public class Petting {
 
                     feeded.setData(bundle1);
                     feeded.sendToTarget();
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        namechanger = new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Map<String, String> func = new LinkedHashMap<String, String>();
+                    func.put("f", petstr.ChangeName);
+                    func.put("name", newname);
+                    JSONObject jsonObject = JSONUtil.getJSONFrom(petstr.PetURL + f(func));
+                    Message changed = new Message();
+                    changed.setTarget(petHandler);
+                    changed.what = msgExtraType.PET_CHANGE_NAME;
+                    Bundle bundle1 = JSONUtil.fromJson(jsonObject);
+
+                    changed.setData(bundle1);
+                    changed.sendToTarget();
                 }catch (Exception e) {
                     e.printStackTrace();
                 }

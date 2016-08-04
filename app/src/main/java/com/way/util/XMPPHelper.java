@@ -174,8 +174,8 @@ public class XMPPHelper {
     }
 
     // 处理字符串图片
-    // Todo 11111 用Handler处理下载图片,(想办法避免重复下载?),保存到hash
-
+    //  11111 用Handler处理下载图片,(想办法避免重复下载?),保存到hash
+	// Todo 动态表情gif
     public static CharSequence convertStringToImage(
             Context context, String message, boolean small) {
         SpannableString value = SpannableString.valueOf("#");

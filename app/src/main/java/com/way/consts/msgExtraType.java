@@ -10,6 +10,7 @@ public class msgExtraType {
     public static final int PET_REFRESH = 0x04;
     public static final int PET_FEED = 0x05;
     public static final int SHOW_MORE = 0x06;
+    public static final int PET_CHANGE_NAME = 0x07;
     public static final int FNS_IMAGE = 0x00;
     public static final int FNS_PET = 0x01;
 }

@@ -25,6 +25,7 @@
     <color name="screenshot_pressed">#bf000000</color>
     <color name="qq_normal">@color/color_hei</color>
     <color name="white">#ffffffff</color>
+    <color name="sakura">#F8C3CD</color>
     <color name="black">@color/color_hei</color>
     <color name="video_bg_color">#ffecf3f9</color>
     <color name="color_divider">#ffdddddd</color>
@@ -54,6 +55,13 @@
     <color name="button_reply_normal">#ffffffff</color>
     <color name="qzone_feeditem_sel">#fff1f1f1</color>
     <color name="qzone_feeditem_nor">#fffafafa</color>
+    <color name="card_background">#ffffff</color>
+    <color name="card_shadow">#10000000</color>
+    <color name="lite_blue">#ff359ff2</color>
+    <color name="window_background">#00000000</color>
+    <color name="black_de">#DE000000</color>
+    <color name="green">#99dd6b</color>
+    <color name="grey">#cccccc</color>
 
     <drawable name="trans">@color/color_hei_8</drawable>
 

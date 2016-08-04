@@ -121,7 +121,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
 
 							Intent intent = new Intent(Intent.ACTION_SEND);
 							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-							String[] tos = { "way.ping.li@gmail.com" };
+							String[] tos = { "worile1tiaogou@163.com" };
 							intent.putExtra(Intent.EXTRA_EMAIL, tos);
 
 							intent.putExtra(Intent.EXTRA_SUBJECT,

@@ -12,7 +12,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,6 +28,7 @@ import com.way.fns.Petting;
 import com.way.swipeback.SwipeBackActivity;
 import com.way.util.L;
 import com.way.util.MD5;
+import com.way.util.MaterialDialog;
 import com.way.util.PreferenceConstants;
 import com.way.util.PreferenceUtils;
 import com.way.util.T;
@@ -44,6 +48,7 @@ public class PetActivity extends SwipeBackActivity {
     String key;
     PetToast petToast;
     LinearLayout pet_attr_layout;
+    MaterialDialog mMaterialDialog;
     int headRes;
 
     Handler petHandler = new Handler() {
@@ -52,12 +57,13 @@ public class PetActivity extends SwipeBackActivity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case msgExtraType.PET_REFRESH:
-                    Bundle bundle = msg.getData();
-                    petRefresh(bundle);
+                    petRefresh(msg.getData());
                     break;
                 case msgExtraType.PET_FEED:
-                    Bundle bundle1 = msg.getData();
-                    petFeed(bundle1);
+                    petFeed(msg.getData());
+                    break;
+                case msgExtraType.PET_CHANGE_NAME:
+                    petChangeName(msg.getData());
                     break;
                 default:
                     break;
@@ -87,6 +93,12 @@ public class PetActivity extends SwipeBackActivity {
             @Override
             public void onClick(View v) {
                 petting.Feed();
+            }
+        });
+        pet_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeName(view);
             }
         });
         // test resource
@@ -144,6 +156,17 @@ public class PetActivity extends SwipeBackActivity {
         }, 2100);
     }
 
+    // 宠物换名字事件
+    private void petChangeName(Bundle bundle) {
+        String result = bundle.getString(petstr.Result);
+        if(result == null || result.equals(petstr.Fail)) {
+            petToast.showShort(bundle.getString(petstr.Reason));
+            return;
+        }
+        petToast.showShort("昵称更改成功~");
+        petting.Refresh();
+    }
+
     private void setHeadRes(int pet_head_icon) {
         try {
             Resources res = getResources();
@@ -155,5 +178,57 @@ public class PetActivity extends SwipeBackActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void changeName(View view) {
+        /*
+        mMaterialDialog = new MaterialDialog(this)
+                .setTitle("MaterialDialog")
+                .setMessage("Hello world!")
+                .setPositiveButton("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mMaterialDialog.dismiss();
+                    }
+                })
+                .setNegativeButton("CANCEL", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mMaterialDialog.dismiss();
+                    }
+                });
+
+        mMaterialDialog.show();
+        */
+        // 必须先inflator,用来找view
+        LayoutInflater layoutInflater = getLayoutInflater();
+        View nView = layoutInflater.inflate(R.layout.pet_change_name, null);
+        LinearLayout container = (LinearLayout)nView.findViewById(R.id.name_changer);
+        final EditText newname = (EditText)nView.findViewById(R.id.new_name);
+        String curname = pet_name.getText().toString();
+        curname = curname.substring(3);
+        newname.setText(curname);
+        Button OK = (Button)nView.findViewById(R.id.name_OK);
+        Button cancel = (Button)nView.findViewById(R.id.name_cancel);
+        OK.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String name = newname.getText().toString();
+                mMaterialDialog.dismiss();
+                if(name == null || name.equals("")) {
+                    petToast.showShort("昵称不能为空~");
+                    return;
+                }
+                petting.ChangeName(name);
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMaterialDialog.dismiss();
+            }
+        });
+        mMaterialDialog = new MaterialDialog(this).setView(nView);
+        mMaterialDialog.show();
     }
 }

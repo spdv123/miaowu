@@ -96,4 +96,10 @@
     <dimen name="phone_country_code_width">115.0dip</dimen>
     <dimen name="phone_country_code_padding">6.0dip</dimen>
 
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="action_button_height">32dp</dimen>
+    <dimen name="action_button_text_size">14sp</dimen>
+    <dimen name="action_button_min_width">56dp</dimen>
+    <dimen name="action_button_padding_horizontal">4dp</dimen>
 </resources>
