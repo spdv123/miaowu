@@ -530,6 +530,7 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
 					.setImageResource(R.drawable.qzone_edit_face_drawable);
 			closeRoots();
 			mIsFaceShow = 0;
+			mMsgListView.setSelection(mMsgListView.getAdapter().getCount() - 1);
 			break;
 
 		default:
@@ -723,6 +724,7 @@ public class ChatActivity extends SwipeBackActivity implements OnTouchListener,
                 //Toast.makeText(chatContext, "count is" + count, Toast.LENGTH_LONG).show();
                 Log.d("count is", String.valueOf(count));
                 SelectFns sfns = new SelectFns();
+				sfns.setEnemy(mWithJabberID.split("@")[0]);
                 sfns.use(count,msg_sender, chatContext, chatActivity);
             }
         });

@@ -1,15 +1,19 @@
 package com.way.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,15 +45,20 @@ import com.way.xx.R;
 public class PetActivity extends SwipeBackActivity {
     Context petContext;
     ImageView pet_head;
-    TextView pet_name;
-    TextView pet_power, pet_intel, pet_spirit, pet_speed;
-    ImageButton pet_feed;
+    TextView pet_power, pet_intel, pet_spirit, pet_speed, pet_name;
+    ImageButton pet_feed, pet_enemy;
     Petting petting;
     String key;
     PetToast petToast;
     LinearLayout pet_attr_layout;
     MaterialDialog mMaterialDialog;
-    int headRes;
+    int headRes, enemyHeadRes;
+    String enemy = null;
+    boolean isEnemyShow = false;
+
+    View enemyView;
+    ImageView enemy_head;
+    TextView enemy_power, enemy_intel, enemy_spirit, enemy_speed, enemy_name, enemy_owner;
 
     Handler petHandler = new Handler() {
         @Override
@@ -65,6 +74,9 @@ public class PetActivity extends SwipeBackActivity {
                 case msgExtraType.PET_CHANGE_NAME:
                     petChangeName(msg.getData());
                     break;
+                case msgExtraType.PET_ENEMY_REFRESH:
+                    petEnemyRefresh(msg.getData());
+                    break;
                 default:
                     break;
             }
@@ -76,6 +88,9 @@ public class PetActivity extends SwipeBackActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.petting);
         petContext = this;
+        Intent intent = getIntent();
+        enemy = intent.getStringExtra("enemy");
+        //Log.d("get enemy", enemy);
         initView();
     }
 
@@ -92,7 +107,15 @@ public class PetActivity extends SwipeBackActivity {
         pet_feed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DisableButton(pet_feed);
                 petting.Feed();
+            }
+        });
+        pet_enemy = (ImageButton) findViewById(R.id.pet_enemy);
+        pet_enemy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEnemy();
             }
         });
         pet_name.setOnClickListener(new View.OnClickListener() {
@@ -106,11 +129,42 @@ public class PetActivity extends SwipeBackActivity {
         pet_name.setText("昵称加载中...");
         String usr = PreferenceUtils.getPrefString(PetActivity.this,
                 PreferenceConstants.ACCOUNT, "");
+        usr = usr.split("@")[0];
         String password = PreferenceUtils.getPrefString(
                 PetActivity.this, PreferenceConstants.PASSWORD, "");
-        key = usr + MD5.FNVHash1(password);
+        key = usr + "@" + MD5.FNVHash1(password);
         petting = new Petting(petHandler, key);
+        initEnemyView();
+        mMaterialDialog  = new MaterialDialog(this);
         //L.d("calced key", key);
+        DisableButton(pet_feed);
+        DisableButton(pet_enemy);
+    }
+
+    private void initEnemyView() {
+        LayoutInflater layoutInflater = getLayoutInflater();
+        enemyView = layoutInflater.inflate(R.layout.pet_enemy, null);
+        enemy_head = (ImageView) enemyView.findViewById(R.id.pet_enemy_head);
+        enemy_name = (TextView) enemyView.findViewById(R.id.pet_enemy_name);
+        enemy_power = (TextView) enemyView.findViewById(R.id.pet_enemy_power);
+        enemy_speed = (TextView) enemyView.findViewById(R.id.pet_enemy_speed);
+        enemy_spirit = (TextView) enemyView.findViewById(R.id.pet_enemy_spirit);
+        enemy_intel = (TextView) enemyView.findViewById(R.id.pet_enemy_intel);
+        enemy_owner = (TextView) enemyView.findViewById(R.id.pet_enemy_owner);
+    }
+
+    private void DisableButton(ImageButton btn) {
+        btn.setEnabled(false);
+        Drawable drw = btn.getBackground();
+        drw.setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+        btn.setBackground(drw);
+    }
+
+    private void EnableButton(ImageButton btn) {
+        btn.setEnabled(true);
+        Drawable drw = btn.getBackground();
+        drw.clearColorFilter();
+        btn.setBackground(drw);
     }
 
     // 宠物刷新事件
@@ -125,6 +179,8 @@ public class PetActivity extends SwipeBackActivity {
         int spirit = bundle.getInt(petstr.Spirit);
         int speed = bundle.getInt(petstr.Speed);
         int intel = bundle.getInt(petstr.Intel);
+
+        // 没关系,这里的error只在Head是0才会出现,详见SelectFns
         int pet_head_icon = bundle.getInt(petstr.Head);
         pet_name.setText(petstr._Nick + new_name);
         pet_intel.setText(petstr._Intel + intel);
@@ -135,10 +191,38 @@ public class PetActivity extends SwipeBackActivity {
 
         pet_head.setColorFilter(Color.rgb(0, 0xb3, 0xe0), PorterDuff.Mode.DST_ATOP);
         //Log.d("color set", "c" + Color.BLUE);
+        EnableButton(pet_feed);
+        EnableButton(pet_enemy);
+    }
+
+    // 敌人宠物刷新事件
+    private void petEnemyRefresh(Bundle bundle) {
+        String result = bundle.getString(petstr.Result);
+        if(result == null || result.equals(petstr.Fail)) {
+            petToast.showShort(bundle.getString(petstr.Reason));
+            return;
+        }
+        String new_name = bundle.getString(petstr.Name);
+        String owner = bundle.getString(petstr.Owner);
+        int power = bundle.getInt(petstr.Power);
+        int spirit = bundle.getInt(petstr.Spirit);
+        int speed = bundle.getInt(petstr.Speed);
+        int intel = bundle.getInt(petstr.Intel);
+
+        // 没关系,这里的error只在Head是0才会出现,详见SelectFns
+        int pet_head_icon = bundle.getInt(petstr.Head);
+        enemy_name.setText(petstr._Nick + new_name);
+        enemy_owner.setText(petstr._Owner+owner);
+        enemy_intel.setText(petstr._Intel + intel);
+        enemy_power.setText(petstr._Power + power);
+        enemy_spirit.setText(petstr._Spirit + spirit);
+        enemy_speed.setText(petstr._Speed + speed);
+        setEnemyHeadRes(pet_head_icon);
     }
 
     // 宠物喂养事件
     private void petFeed(Bundle bundle) {
+        EnableButton(pet_feed);
         String result = bundle.getString(petstr.Result);
         if(result == null || result.equals(petstr.Fail)) {
             petToast.showShort(bundle.getString(petstr.Reason));
@@ -180,26 +264,20 @@ public class PetActivity extends SwipeBackActivity {
         }
     }
 
-    private void changeName(View view) {
-        /*
-        mMaterialDialog = new MaterialDialog(this)
-                .setTitle("MaterialDialog")
-                .setMessage("Hello world!")
-                .setPositiveButton("OK", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mMaterialDialog.dismiss();
-                    }
-                })
-                .setNegativeButton("CANCEL", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mMaterialDialog.dismiss();
-                    }
-                });
+    private void setEnemyHeadRes(int pet_head_icon) {
+        try {
+            Resources res = getResources();
+            int head_res = res.getIdentifier("pet_head_" + pet_head_icon + "_nor", "drawable", getPackageName());
+            Log.d("head_res", "p" + head_res);
+            enemyHeadRes = head_res;
+            enemy_head.setImageResource(enemyHeadRes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        mMaterialDialog.show();
-        */
+    private void changeName(View view) {
+        mMaterialDialog = new MaterialDialog(this);
         // 必须先inflator,用来找view
         LayoutInflater layoutInflater = getLayoutInflater();
         View nView = layoutInflater.inflate(R.layout.pet_change_name, null);
@@ -228,7 +306,28 @@ public class PetActivity extends SwipeBackActivity {
                 mMaterialDialog.dismiss();
             }
         });
-        mMaterialDialog = new MaterialDialog(this).setView(nView);
+        mMaterialDialog.setView(nView);
+        mMaterialDialog.setCanceledOnTouchOutside(true);
+        mMaterialDialog.show();
+    }
+
+    private void showEnemy() {
+        mMaterialDialog = new MaterialDialog(this);
+        // Todo Why must re-init EnemyView?
+        initEnemyView();
+        //mMaterialDialog.setContentView(enemyView);
+        mMaterialDialog.setView(enemyView);
+        isEnemyShow = true;
+        mMaterialDialog.setCanceledOnTouchOutside(true);
+        //*
+        mMaterialDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                isEnemyShow = false;
+            }
+        });
+        //*/
+        petting.EnemyRefresh(enemy);
         mMaterialDialog.show();
     }
 }
